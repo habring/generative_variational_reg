@@ -1,0 +1,1 @@
+blurred with Gaussian kernel with standard deviation 0.25, size 9x9 (barbara, mix, patches), size 13x13 (fish, zebra), resp, and then added noise 0.025 x image range

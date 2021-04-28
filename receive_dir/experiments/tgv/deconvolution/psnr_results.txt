@@ -1,0 +1,4 @@
+TGV imsource/cart_text_mix.png PSNR = 23.56
+TGV imsource/barbara_crop.png PSNR = 22.47
+TGV imsource/fish.png PSNR = 23.73
+TGV imsource/zebra.png PSNR = 26.41
