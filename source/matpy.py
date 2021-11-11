@@ -2040,7 +2040,7 @@ def tgv_recon(**par_in):
     if np.any(data_in.mask):
         u0 = np.copy(u0)
         mask = (np.around(data_in.mask)).astype(np.int32)
-        u0[~mask] = 0.0
+        u0[mask==0] = 0.0
 
     if np.any(data_in.corrupted):
         u0 = np.copy(data_in.corrupted)
