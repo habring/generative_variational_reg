@@ -14,6 +14,8 @@ import libjpeg as jlib
 from skimage.metrics import structural_similarity as ssim
 
 import matplotlib.gridspec as gridspec
+import matplotlib
+matplotlib.use('Agg')
 
 from matpy import *
 #Doc
@@ -220,8 +222,6 @@ def show_network(C,D,imsyn, imsyn_list,cmap='gray',vrange=[],save=False, fname =
             ax.axes.yaxis.set_ticks([])
         
     
-    fig.show()
-
     if save:
         plt.savefig(fname)
     
