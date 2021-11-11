@@ -9,8 +9,8 @@ import matpy as mp
 import numpy
 import matplotlib.pyplot as plt
 
-num_iter = 8000
-niter_steps = 500 #iterations for the smaller networks as initialization
+num_iter = 1#8000
+niter_steps = 1#500 #iterations for the smaller networks as initialization
 show_every = 0
 check = 0
 check_opt = 500
