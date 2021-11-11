@@ -15,7 +15,7 @@ from skimage.metrics import structural_similarity as ssim
 
 import matplotlib.gridspec as gridspec
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 from matpy import *
 #Doc

@@ -2,6 +2,7 @@ import numpy as np
 import scipy.misc
 import scipy.io
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d #For surface plot
 import scipy.signal
 import sys #For error handling
 #For saving data
@@ -40,12 +41,6 @@ if __name__ == "__main__":
     
     #Load main libraries (this requires to set the PYTHONPATH, see info.txt)
     import matpy as mp
-    
-    #import convex_learning as cl
-    
-    if os.path.isfile('cl_supp.py'):
-    
-        import cl_supp as sp
 
 
 
@@ -71,7 +66,20 @@ class parameter(object):
     def __str__(self):
         #self.__dict__: Class members as dict
         #.__str__() is theprint function of a class
-        return self.__dict__.__str__()
+        
+        #Above: standard dict print, below: print every entry in new line
+        #return self.__dict__.__str__()
+        return "{\n" + "\n".join("{!r}: {!r},".format(k, v) for k, v in self.__dict__.items()) + "\n}"
+        
+class timing_object(object):
+    
+    def __init__(self,adict):
+        self.__dict__.update(adict)
+    
+    #Define print function
+    def __str__(self):
+        return "{\n" + "\n".join("{!r}: {!r},".format(k, np.round(v,4)) for k, v in self.__dict__.items()) + "\n}"
+
         
 class data_input(object):
     
@@ -104,13 +112,17 @@ class output(object):
 
         #Generate folder if necessary
         if folder:
-            if not os.path.isdir(folder):
-                os.mkdir(folder)
-                
-        #Remove ending if necessary
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+
+        # The following was commented by Andi, in order to be able to save with names containing '.'
+        # Remove ending if necessary
         pos = fname.find('.')
         if pos>-1:
             fname = fname[:pos]
+
+        # if fname[-4:] == '.png':
+        #     fname = fname[:-4]
         
         #Concatenate folder and filename
         outname = fname
@@ -149,7 +161,7 @@ class output(object):
         #Get name
         outname = self.output_name(outpars,fname,folder)
         #Save
-        psave(outname,self) 
+        psave(outname,self)
 
     def show(self):
     
@@ -356,7 +368,7 @@ def pickle_get_current_class(obj):
 
 def psave(name,data):
     
-    #This might potentially fix erros wich pickle and autoreload...try it next time the error ocurs
+    #This might potentially fix erros with pickle and autoreload...try it next time the error ocurs
     data.__class__ = pickle_get_current_class(data)
     
     copyreg.pickle(types.MethodType, _pickle_method, _unpickle_method)
@@ -594,11 +606,8 @@ def imread(imname):
 
 
 #Function to scale image to [0,1]. Range defines current image range (default: [img.min(),img.max()], values above and below will be cliped
-def imnormalize(img,rg=[],abs_value = False):
+def imnormalize(img,rg=[]):
     
-    if abs_value:
-        img = np.abs(img)
-
     if not rg:
         rg = [img.min(),img.max()]
         
@@ -606,12 +615,13 @@ def imnormalize(img,rg=[],abs_value = False):
     #Clip range boundaries
     img = np.clip(np.copy(img.astype('float')),rg[0],rg[1])
     
-    #Convert rage to [0,1]
+    #Convert range to [0,1]
     img = img - rg[0]
     if (rg[1]-rg[0])>0:
         img = img/(rg[1]-rg[0])
     elif np.any(img):
-        raise ValueError('Function requires rg[0]<rg[1]')        
+        #raise ValueError('Function requires rg[0]<rg[1]')        
+        print('image is constant')
     else:
         print('Warning: empty image, ignoring range argument, no normalization carried out')
 
@@ -621,7 +631,7 @@ def imnormalize(img,rg=[],abs_value = False):
     
 def imsave(fname,img,format=None,rg=[], normalize=False): #rg defines grayscale boundary values. Choosing rg=[] uses [img.min(),img.max()]
     
-
+    
     img = np.clip(np.copy(img.astype('float')),0,1)
     if normalize:
         img = imnormalize(img,rg=rg)
@@ -772,7 +782,7 @@ def project_l1(y,tau=1.0,nx=1):
 
 #Proximal mapping of the convex conjugate of mu|.|_1
 #The prox parameter tau is not needed
-def proxl1s(p,mu=1.0,vdims=(),copy=True,tau=1.0,symgrad=False):
+def proxl1s(p,mu=1.0,vdims=(),copy=True,tau=1.0,vecweights=False):
 
 
     if copy:
@@ -780,7 +790,7 @@ def proxl1s(p,mu=1.0,vdims=(),copy=True,tau=1.0,symgrad=False):
     else:
         z = p
 
-    if not symgrad:
+    if not vecweights:
         if np.sum(mu) not in [0,np.inf]:
             if vdims:
                 z/= np.maximum( np.sqrt(np.square(p).sum(axis=vdims,keepdims=True) )/mu , 1.0)
@@ -792,20 +802,21 @@ def proxl1s(p,mu=1.0,vdims=(),copy=True,tau=1.0,symgrad=False):
         #If mu=np.inf nothing needs to be done
     else:
         
-        wdim = [1,1,3] + [1 for i in range(len(p.shape[3:]))]
+        wdim = [1,1,len(vecweights)] + [1 for i in range(len(p.shape[3:]))]
         weight = np.ones(wdim)
-        weight[:,:,2,...] = 2.0
+        for i in range(len(vecweights)):
+            weight[0,0,i,...] = vecweights[i]
         
         z/= np.maximum( np.sqrt((weight*np.square(p)).sum(axis=vdims,keepdims=True) )/mu , 1.0)
 
     return z
 
 #Proximal mapping of tau|.|_1, i.e., computes (I + tau|.|_1)^(-1)
-def shrink(p,tau=1.0,mshift=0.0,vdims=(),copy=True,symgrad=False):
+def shrink(p,tau=1.0,mshift=0.0,vdims=(),copy=True,vecweights=False):
 
     #Note that we skip -mshift + mshift
     #Using prox_f(x) = prox_0(x-f)+f
-    return p - proxl1s((p-mshift),tau,vdims=vdims,copy=copy,symgrad=symgrad) #Moreau's Identity
+    return p - proxl1s((p-mshift),tau,vdims=vdims,copy=copy,vecweights=vecweights) #Moreau's Identity
 
 
 #Computes (I + tau*DF)^(1-) with F(u) = 1/2|u-f|_2^2
@@ -823,17 +834,18 @@ def proxl2fs(u,mshift=0,npar=1.0,ppar=1.0):
 def l2nsq(x,mshift=0.0):
     return np.square(np.abs(x-mshift)).sum()
 
-def l1nrm(x,mshift=0.0,vdims=(),eps=0,symgrad=False):
+def l1nrm(x,mshift=0.0,vdims=(),eps=0,vecweights=False):
 
-    if not symgrad:
+    if not vecweights:
         if vdims or eps>0:
             return np.sqrt(np.square(x-mshift).sum(axis=vdims) + eps ).sum()
         else:
             return np.abs(x-mshift).sum()
     else:
-        wdim = [1,1,3] + [1 for i in range(len(x.shape[3:]))]
+        wdim = [1,1,len(vecweights)] + [1 for i in range(len(x.shape[3:]))]
         weight = np.ones(wdim)
-        weight[:,:,2,...] = 2.0
+        for i in range(len(vecweights)):
+            weight[0,0,i,...] = vecweights[i]
         
         return np.sqrt((weight*np.square(x-mshift)).sum(axis=vdims) + eps ).sum()
 
@@ -875,7 +887,7 @@ def mshape(A,rowdims=2):
 #Semi-norm type function
 class nfun(object):
 
-    def __init__(self,ntype,npar=1.0,mshift=0.0,vdims=(),symgrad=False,mask=False,eps=0.1,delta=1.0,l1eps_par=10e-05):
+    def __init__(self,ntype,npar=1.0,mshift=0.0,vdims=(),vecweights = False , mask=False,eps=0.1,delta=1.0,l1eps_par=0.1):
         
         self.npar = npar #Scalar mulitplier
         self.ntype = ntype #Type of norm
@@ -884,7 +896,7 @@ class nfun(object):
         self.mask = mask #Mask for inpainting-norm
         self.eps = eps #Parameter for semi-convex function
         self.delta = delta #Second parameter for semi-convex function
-        self.symgrad = symgrad #Flag to adapt Norm-weighting to symgrad
+        self.vecweights = vecweights #Allows to put weights on the vector-dimension for the l1 norm, used for the symgrad and symgrad2 norm
         self.l1eps_par = l1eps_par # Smoothing parameter for l1+eps norm
 
         
@@ -903,19 +915,19 @@ class nfun(object):
         vdims_types = ['l1','l1infty','I_linfty','l1-svd','semiconv-svd','l1_2-svd','l0-svd','l1eps']
         if vdims and ntype not in vdims_types:
             print('Warning: vdims not implemented for ' + ntype)
-        #List of types that implement symgrad
-        symgrad_types = ['l1']
-        if symgrad and ntype not in symgrad_types:
-            print('Warning: symgrad not implemented for ' + ntype)
+        #List of types that implement vecweights
+        vecweights_types = ['l1']
+        if vecweights and ntype not in vecweights_types:
+            print('Warning: vecweights not implemented for ' + ntype)
 
 
 
         #Set evaluation    
         if ntype == 'l1':
         
-            def val(x): return self.npar*l1nrm(x,mshift=self.mshift,vdims=self.vdims,symgrad=self.symgrad)
-            def dprox(x,ppar): return proxl1s(x,mu=self.npar,vdims=self.vdims,symgrad=symgrad)
-            def prox(x,ppar): return shrink(x,tau=self.npar*ppar,mshift=self.mshift,vdims=self.vdims,symgrad=symgrad)
+            def val(x): return self.npar*l1nrm(x,mshift=self.mshift,vdims=self.vdims,vecweights=self.vecweights)
+            def dprox(x,ppar): return proxl1s(x,mu=self.npar,vdims=self.vdims,vecweights=self.vecweights)
+            def prox(x,ppar): return shrink(x,tau=self.npar*ppar,mshift=self.mshift,vdims=self.vdims,vecweights=self.vecweights)
             
         if ntype == 'linfty':
         
@@ -946,8 +958,8 @@ class nfun(object):
 
         if ntype == 'l1eps':
             
-            def val(x): return self.npar*np.sqrt(np.square(x-self.mshift).sum(axis=vdims) + eps ).sum()
-            def grad(x): return self.npar*(x-self.mshift)/np.sqrt(np.square(x-self.mshift).sum(axis=vdims,keepdims=True) + eps ) 
+            def val(x): return self.npar*((np.sqrt(np.square(x-self.mshift).sum(axis=vdims) + self.l1eps_par )).sum())
+            def grad(x): return self.npar*(x-self.mshift)/np.sqrt(np.square(x-self.mshift).sum(axis=vdims,keepdims=True) + self.l1eps_par ) 
             
             def prox(x,ppar): raise NameError('Error: Prox not implemented for l1eps')
             def dprox(x,ppar): raise NameError('Error: Dual Prox not implemented for l1eps')
@@ -1072,9 +1084,11 @@ class nfun(object):
             if not np.any(mask):
                 print('Error: mask required')
                 
-            def val(x): return np.abs(x[mask]-mshift[mask]).sum()
-            def prox(x,ppar): x[mask] = mshift[mask] ; return x
+            def val(x): return np.abs(x[mask==1]-mshift[mask==1]).sum()
+            def prox(x,ppar): x[mask==1] = mshift[mask==1] ; return x
             def dprox(x,ppar): return prox_dual(x,self.prox,ppar=ppar)
+            def grad(x): return 0.0 #auxiliary function for the implementation
+
 
         #Indicator function of {0}
         if ntype == 'I0':
@@ -1083,9 +1097,9 @@ class nfun(object):
             def dprox(x,ppar): return x - ppar*self.mshift
             def prox(x,ppar): return np.zeros(x.shape) + self.mshift
 
-        #Indicatur function of negative values        
+        #Indicatur function of negative values
         if ntype == 'IN':
-                            
+        
             def val(x): return np.abs(x[x>0.0]).sum()
             def dprox(x,ppar): z = np.copy(x); z[z<0] = 0; return z
             def prox(x,ppar): z = np.copy(x); z[z>0] = 0; return z
@@ -1164,7 +1178,7 @@ def test_adj(fwd,adj,dim1,*dim2):
         s1 = (fwd(x)*y).sum()
         s2 = (x*adj(y)).sum()
         
-        print('Abs err: ' + str(s1-s2))
+        print('Abs err: ' + str(np.abs(s1-s2)))
         print('Rel err: ' + str( np.abs(s1-s2)/np.abs(x).sum() ))
 
 
@@ -1586,6 +1600,113 @@ class symgrad(object):
         print('Rel err: ' + str( np.abs(s1-s2)/np.abs(x).sum() ))
 
 
+#Computes the symmetrized gradient of a [n,m,3] symmetric matrix using forward differences
+#Build to be used for TGV3
+#Expected indim: [n,m,3,...]
+#Resulting outdim: [n,m,4,...]
+
+class symgrad2(object):
+
+    def __init__(self,shape):
+    
+        self.indim = list(shape)
+        
+        outdim = list(shape[0:2])
+        outdim.append(4)
+        
+        for dim in shape[3:]:
+            outdim.append(dim)
+            
+        self.outdim = outdim
+        
+        self.nrm = np.sqrt(8.0)
+    
+    #Output dx(x0) dy(x1) 1/3[ dy(x0) + 2*dx(x2) ] 1/3[ 2*dy(x2) + dx(x1) ]        
+    def fwd(self,x):
+
+        z = np.zeros(self.outdim)
+        
+        
+        #dx of x[0]
+        z[1:,:,0,...] = x[1:,:,0,...] - x[:-1,:,0,...]
+        #dy of x[1]        
+        z[:,1:,1,...] = x[:,1:,1,...] - x[:,:-1,1,...]
+        
+        #2*dx of x[2]
+        z[1:,:,2,...] = 2*( x[1:,:,2,...] - x[:-1,:,2,...] )
+        # + dy of x[0]
+        z[:,1:,2,...] += x[:,1:,0,...] - x[:,:-1,0,...]
+        
+        z[:,:,2,...] /=3.0
+        
+        #dx of x[1]
+        z[1:,:,3,...] = x[1:,:,1,...] - x[:-1,:,1,...]
+        # + 2*dy of x[2]
+        z[:,1:,3,...] += 2*( x[:,1:,2,...] - x[:,:-1,2,...] )
+        
+        z[:,:,3,...] /=3.0
+
+        return z
+
+
+    def adj(self,p):
+
+
+        x = np.zeros(self.indim)
+        
+        #dx of p[0] + dy of p[2]
+        x[0,:,0,...]    = p[1,:,0,...]
+        x[-1,:,0,...]   =               - p[-1,:,0,...]
+        x[1:-1,:,0,...] = p[2:,:,0,...] - p[1:-1,:,0,...]
+        
+        x[:,0,0,...]    += p[:,1,2,...]
+        x[:,-1,0,...]   +=               - p[:,-1,2,...]
+        x[:,1:-1,0,...] += p[:,2:,2,...] - p[:,1:-1,2,...]
+
+        #dy of p[1] + dx of p[3]
+        x[:,0,1,...]    = p[:,1,1,...]
+        x[:,-1,1,...]   =               - p[:,-1,1,...]
+        x[:,1:-1,1,...] = p[:,2:,1,...] - p[:,1:-1,1,...]
+
+        x[0,:,1,...]    += p[1,:,3,...]
+        x[-1,:,1,...]   +=               - p[-1,:,3,...]
+        x[1:-1,:,1,...] += p[2:,:,3,...] - p[1:-1,:,3,...]
+        
+        #dx of p[2] + dy of p[3]
+        x[0,:,2,...]    = p[1,:,2,...]
+        x[-1,:,2,...]   =               - p[-1,:,2,...]
+        x[1:-1,:,2,...] = p[2:,:,2,...] - p[1:-1,:,2,...]
+        
+        x[:,0,2,...]    += p[:,1,3,...]
+        x[:,-1,2,...]   +=               - p[:,-1,3,...]
+        x[:,1:-1,2,...] += p[:,2:,3,...] - p[:,1:-1,3,...]
+
+
+        return -x
+
+
+    def test_adj(self):
+    
+    
+
+        x = np.random.rand(*self.indim)
+        y = np.random.rand(*self.outdim)
+
+        z1 = self.fwd(x)
+        z1[:,:,2,...] *=3.0
+        z1[:,:,3,...] *=3.0
+
+        s1 = (z1*y).sum()
+        
+        z2 = self.adj(y)
+        z2[:,:,2,...] *=2.0
+        
+        s2 = (x*z2).sum()
+        
+        print('Abs err: ' + str(s1-s2))
+        print('Rel err: ' + str( np.abs(s1-s2)/np.abs(x).sum() ))
+
+
 
 class hessian(object):
 
@@ -1899,7 +2020,7 @@ def tgv_denoise(**par_in):
 
     dnrm = nfun(dtype,mshift=u0,npar=ld,mask=mask)
     l1vec = nfun('l1',vdims=(2),npar=1.0)
-    l1mat = nfun('l1',vdims=(2),npar=alpha0*1.0,symgrad=True)
+    l1mat = nfun('l1',vdims=(2),npar=alpha0*1.0,vecweights=[1,1,2])
 
     ##Variables
 
@@ -1971,7 +2092,6 @@ def tgv_recon(**par_in):
     ##Set data
     data_in.u0 = 0 #Direct image input
     data_in.mask = 0 #Inpaint requires a mask
-    data_in.corrupted = 0 #Direct input of corrupted data
 
     #Possible forward operator. Standard (False) sets identity. Needs to have F.outdim, F.nrm, F.fwd, F.adj
     data_in.F = False
@@ -1990,13 +2110,16 @@ def tgv_recon(**par_in):
     par.ld = 20.0 #Data missfit
 
     #TGV parameter
-    par.alpha0 = np.sqrt(2.0)
+    par.alpha1 = np.sqrt(2.0)
+    par.alpha2 = np.sqrt(2.0)
+    
+    par.order = 2 #Order of TGV regularizatoin, can be 2,3
     
     par.noise=0.1 #Standard deviaion of gaussian noise in percent of image range
     
     par.s_t_ratio = 100.0
 
-    par.check = 1000 #Show results ever "check" iteration
+    par.check = 10 #Show results ever "check" iteration
     
     par.nrm_red = 1.0 #Factor for norm reduction, no convergence guarantee with <1
 
@@ -2012,8 +2135,6 @@ def tgv_recon(**par_in):
     #Load data or image
     if not np.any(data_in.u0):
         data_in.u0 = imread(par.imname)
-        if len(data_in.u0.shape)==3:
-            data_in.u0 = 0.3*data_in.u0[:,:,0] + 0.59*data_in.u0[:,:,1] + 0.11*data_in.u0[:,:,2]
     elif not par.imname:
         par.imname='direct_input'
 
@@ -2029,7 +2150,6 @@ def tgv_recon(**par_in):
     u0 = np.copy(data_in.u0)
     u0 = F.fwd(u0)
     
-    mask = data_in.mask
     #Add noise
     if par.noise:
         np.random.seed(1)
@@ -2039,11 +2159,7 @@ def tgv_recon(**par_in):
         u0 += np.random.normal(scale=par.noise*rg,size=u0.shape) #Add noise
     if np.any(data_in.mask):
         u0 = np.copy(u0)
-        mask = (np.around(data_in.mask)).astype(np.int32)
-        u0[mask==0] = 0.0
-
-    if np.any(data_in.corrupted):
-        u0 = np.copy(data_in.corrupted)
+        u0 = u0*data_in.mask
         
     #Image size
     N,M = u0.shape
@@ -2051,19 +2167,34 @@ def tgv_recon(**par_in):
     #Operators and norms
     grad = gradient(u0.shape)
     sgrad = symgrad(grad.outdim)
+    sgrad2 = symgrad2(sgrad.outdim)
 
-    dnrm = nfun(par.dtype,mshift=u0,npar=par.ld,mask=mask)
+    dnrm = nfun(par.dtype,mshift=u0,npar=par.ld,mask=data_in.mask)
     l1vec = nfun('l1',vdims=(2),npar=1.0)
-    l1mat = nfun('l1',vdims=(2),npar=par.alpha0*1.0,symgrad=True)
+    l1mat = nfun('l1',vdims=(2),npar=par.alpha1*1.0,vecweights=[1,1,2])
+    l1ten = nfun('l1',vdims=(2),npar=par.alpha2*1.0,vecweights=[1,1,3,3])
 
 
     ##Stepsize
-    opnorms = [ 
-    [grad.nrm,1],
-    [0,sgrad.nrm]
-    ]
+    if par.order == 1:
+        opnorms = [[grad.nrm]]
+        fwd_nrm = [0]
+    if par.order == 2:
+        opnorms = [ 
+        [grad.nrm,1],
+        [0,sgrad.nrm]
+        ]
+        fwd_nrm = [0,0]
+    if par.order == 3:
+        opnorms = [ 
+        [grad.nrm,1,0],
+        [0,sgrad.nrm,1],
+        [0,0,sgrad2.nrm]
+        ]
+        fwd_nrm = [0,0,0]
     if par.datadual:
-        opnorms.append([F.nrm,0])
+        fwd_nrm[0] = Fnrm
+        opnorms.append(fwd_nrm)
         
     nrm = par.nrm_red*get_product_norm(opnorms) 
 
@@ -2080,23 +2211,35 @@ def tgv_recon(**par_in):
 
     ##Variables
 
-    #Primal
+
     u = np.zeros(u0.shape)
     ux = np.zeros(u.shape)
     
-    v = np.zeros(grad.outdim)
-    vx = np.zeros(v.shape)
-            
-    #Dual
     p = np.zeros(grad.outdim)
-    q = np.zeros(sgrad.outdim)
+    
+    if par.order >1:
+        v = np.zeros(grad.outdim)
+        vx = np.zeros(v.shape)
+        q = np.zeros(sgrad.outdim)
+    if par.order >2:
+        w = np.zeros(sgrad.outdim)
+        wx = np.zeros(w.shape)
+        r = np.zeros(sgrad2.outdim)
+        
 
     if par.datadual: #If we have a forward operator, the data term needs to be dualized
         d = np.zeros(F.outdim)
 
     ob_val = np.zeros([par.niter+1])
 
-    ob_val[0] = dnrm.val(F.fwd(u)) + l1vec.val(grad.fwd(u) - v) + l1mat.val(sgrad.fwd(v))
+    ob_val[0] = dnrm.val(F.fwd(u))
+    if par.order == 1:
+        ob_val[0] += l1vec.val(grad.fwd(u))
+    if par.order == 2:
+        ob_val[0] += l1vec.val(grad.fwd(u) - v) + l1mat.val(sgrad.fwd(v))
+    if par.order == 3:
+        ob_val[0] += l1vec.val(grad.fwd(u) - v) + l1mat.val(sgrad.fwd(v) - w) + l1ten.val(sgrad2.fwd(w))
+
     
     for k in range(par.niter):
 
@@ -2105,12 +2248,31 @@ def tgv_recon(**par_in):
         if par.datadual:
             d = d + par.sig*( F.fwd(ux) )
             d = dnrm.dprox(d,ppar=par.sig)
-                        
-        p = p + par.sig*( grad.fwd(ux) - vx )
-        p = l1vec.dprox(p,ppar=par.sig)
-                
-        q = q + par.sig*( sgrad.fwd(vx) )
-        q = l1mat.dprox(q,ppar=par.sig)
+
+        if par.order == 1:
+
+            p = p + par.sig*( grad.fwd(ux) )
+            p = l1vec.dprox(p,ppar=par.sig)
+
+        if par.order == 2:
+                                
+            p = p + par.sig*( grad.fwd(ux) - vx )
+            p = l1vec.dprox(p,ppar=par.sig)
+                    
+            q = q + par.sig*( sgrad.fwd(vx) )
+            q = l1mat.dprox(q,ppar=par.sig)
+
+        if par.order == 3:
+
+            p = p + par.sig*( grad.fwd(ux) - vx )
+            p = l1vec.dprox(p,ppar=par.sig)
+                    
+            q = q + par.sig*( sgrad.fwd(vx) - wx)
+            q = l1mat.dprox(q,ppar=par.sig)
+
+            r = r + par.sig*( sgrad2.fwd(wx))
+            r = l1ten.dprox(r,ppar=par.sig)
+
         
         #Primal
         if par.datadual: 
@@ -2118,15 +2280,30 @@ def tgv_recon(**par_in):
         else:
             ux = dnrm.prox( u - par.tau*(grad.adj(p))   ,ppar=par.tau)
 
-        vx = v - par.tau*( -p + sgrad.adj(q))
-
         u = 2.0*ux - u
-        v = 2.0*vx - v
-
         [u,ux] = [ux,u]
-        [v,vx] = [vx,v]
+                
+        if par.order >1:
+   
+            vx = v - par.tau*( -p + sgrad.adj(q))
+            v = 2.0*vx - v
+            [v,vx] = [vx,v]    
+        if par.order >2:
+   
+            wx = w - par.tau*( -q + sgrad2.adj(r))
+            w = 2.0*wx - w
+            [w,wx] = [wx,w]
 
-        ob_val[k+1] = dnrm.val(F.fwd(u)) + l1vec.val(grad.fwd(u) - v) + l1mat.val(sgrad.fwd(v))
+
+
+        ob_val[k+1] = dnrm.val(F.fwd(u))
+        if par.order == 1:
+            ob_val[k+1] += l1vec.val(grad.fwd(u))
+        if par.order == 2:
+            ob_val[k+1] += l1vec.val(grad.fwd(u) - v) + l1mat.val(sgrad.fwd(v))
+        if par.order == 3:
+            ob_val[k+1] += l1vec.val(grad.fwd(u) - v) + l1mat.val(sgrad.fwd(v) - w) + l1ten.val(sgrad2.fwd(w))
+
 
         if np.remainder(k,par.check) == 0:
             print('Iteration: ' + str(k) + ' / Ob-val: ' + str(ob_val[k]) + ' / Image: '+par.imname)
@@ -2140,12 +2317,18 @@ def tgv_recon(**par_in):
 
     #Save variables
     res.u = u
-    res.v = v
+    if par.order >1:
+        res.v = v
+        res.sgrad = sgrad
+    if par.order >2:
+        res.w = w
+        res.sgrad2 = sgrad2
+        
     res.ob_val = ob_val
 
     #Save operators
     res.grad = grad
-    res.sgrad = sgrad
+
     res.F = F
     
     #Save parmeters and input data
