@@ -77,7 +77,7 @@ if not os.path.isdir(folder):
 
 
 ## Choose result type to compute
-niter = 5#8000
+niter = 8000
 types = ['inpaint','denoise','deblurring']
 outfolder = 'experiments/tgv/'
 
