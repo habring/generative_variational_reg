@@ -2,7 +2,10 @@
 name = "generative_variational_reg"
 version = "0.1.0"
 description = ""
-authors = ["habring <andreas.habring@uni-graz.at>"]
+authors = [
+    "Andreas Habring <andreas.habring@uni-graz.at>",
+    "Martin Holler <martin.holler@uni-graz.at>",
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"

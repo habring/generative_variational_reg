@@ -2200,7 +2200,7 @@ def tgv_recon(**par_in):
         ]
         fwd_nrm = [0,0,0]
     if par.datadual:
-        fwd_nrm[0] = Fnrm
+        fwd_nrm[0] = F.nrm
         opnorms.append(fwd_nrm)
         
     nrm = par.nrm_red*get_product_norm(opnorms) 
