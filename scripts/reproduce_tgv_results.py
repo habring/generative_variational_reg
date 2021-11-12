@@ -88,7 +88,7 @@ if 'inpaint' in types:
 
 
     folder = outfolder + 'inpainting/'
-    fixpars = {'niter':niter,'noise':0.0,'ld':1,'dtype':'inpaint'}
+    fixpars = {'niter':niter,'noise':0.0,'ld':1,'dtype':'inpaint','check':500}
 
     # patchtest
     data = mp.pload('imsource/tgv_data/inpainting/patchtest')
@@ -134,7 +134,7 @@ if 'inpaint' in types:
 if 'denoise' in types:
 
     folder = outfolder + 'denoising/'
-    fixpars = {'niter':niter}
+    fixpars = {'niter':niter,'check':500}
 
     # Patches
     data = mp.pload('imsource/tgv_data/denoising/patchtest')
@@ -176,7 +176,7 @@ if 'deblurring' in types:
     
     folder = outfolder + 'deconvolution/'
     F = mp.gconv([128,128],9,0.25)
-    fixpars = {'niter':niter,'noise':0.025,'F':F}
+    fixpars = {'niter':niter,'noise':0.025,'F':F,'check':500}
 
 
     #Mix
