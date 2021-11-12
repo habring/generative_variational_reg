@@ -97,6 +97,7 @@ file1.close()
 for i in range(1,27):
     original = mp.imread('imsource/imagenet/texture/img_'+str(i)+'.png')
     mask = mp.imread('imsource/imagenet/texture/mask.png')
+    mask = mask.astype(np.int32)
     res = mp.tgv_recon(imname='imsource/imagenet/texture/img_'+str(i),u0=original,mask=mask,check=niter, **fixpars)
 
     psnr_val = np.round(mp.psnr(res.u,original,smax = np.abs(original.max()-original.min()),rescaled=True),decimals=2)

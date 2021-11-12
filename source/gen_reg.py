@@ -270,7 +270,6 @@ def save_results(res, name, foldername = ''):
     ax.set_xlabel('number of iterations')
     ax.set_ylabel(r'ln$(\mathcal{E}^{\;D}_y)$',rotation=0,labelpad=20)
     plt.tight_layout()
-    fig.show()
     plt.savefig(foldername+'/'+filename+'_obval_short.png')
 
     closefig()
