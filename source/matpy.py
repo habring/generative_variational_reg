@@ -2132,7 +2132,6 @@ def tgv_recon(**par_in):
     #Set parameters according to par_in
     par_parse(par_in,[par,data_in])
 
-
     #Load data or image
     if not np.any(data_in.u0):
         data_in.u0 = imread(par.imname)
@@ -2140,7 +2139,6 @@ def tgv_recon(**par_in):
             data_in.u0 = 0.3*data_in.u0[:,:,0] + 0.59*data_in.u0[:,:,1] + 0.11*data_in.u0[:,:,2]
     elif not par.imname:
         par.imname='direct_input'
-
 
     #Standard initializaton of forward operator
     par.datadual = True
@@ -2153,21 +2151,23 @@ def tgv_recon(**par_in):
     u0 = np.copy(data_in.u0)
     u0 = F.fwd(u0)
     
+    #np.random.seed(100)
+    np.random.seed(1)
+    
     #Add noise
     if par.noise:
-        np.random.seed(1)
-        
         rg = np.abs(u0.max() - u0.min()) #Image range
-        
         u0 += np.random.normal(scale=par.noise*rg,size=u0.shape) #Add noise
+
     if np.any(data_in.mask):
-        u0 = np.copy(u0)
         data_in.mask = (data_in.mask).astype(np.int32)
         u0[data_in.mask==0] = 0.0
 
+
     if np.any(data_in.corrupted):
         u0 = np.copy(data_in.corrupted)
-        
+    
+
     #Image size
     N,M = u0.shape
 
@@ -2348,3 +2348,41 @@ def tgv_recon(**par_in):
 
 
     return res
+
+
+
+
+#Function to save the output and compute PSNR values
+def save_output(res,with_psnr=True,folder=''):
+
+    #Create folder if necessary
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+        
+    #Generate output name
+    outname = res.output_name(folder=folder)
+    #Save result file
+    res.save(folder=folder)
+    
+    if with_psnr:
+        psnr_val = np.round(psnr(res.u,res.orig,smax = np.abs(res.orig.max()-res.orig.min()),rescaled=True),decimals=2)
+        print( outname + '\nPSNR: ' + str(psnr_val) )
+    else:
+        psnr_val = np.nan
+
+    res_txt = open(folder+'psnr_results.txt','a') 
+    res_txt.write('TGV '+res.par.imname + ' PSNR = '+str(psnr_val)+'\n')
+    res_txt.close()
+
+    #Save original image
+    #rg = [res.orig.min(),res.orig.max()]
+    rg = []
+    imsave(outname+'_orig.png',res.orig,rg=rg)
+    #Save data images
+    imsave(outname+'_data.png',res.u0,rg=rg)
+    #Save reconstructed image
+    imsave(outname+'_recon.png',res.u,rg=rg)
+
+
+
+

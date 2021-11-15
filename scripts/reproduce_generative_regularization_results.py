@@ -6,7 +6,7 @@ import time
 
 import imageio
 import matpy as mp
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 
 num_iter = 8000
@@ -81,7 +81,11 @@ if 'inpainting' in cases:
 
   for name in images:
     nu = nu_dict[name]
-    res = gr.gen_reg_successively(imname='imsource/'+name+'.png',nu=nu, **fixpars)
+    mask = np.load('imsource/corrupted/inpainting/'+name+'_mask.npy')
+    original = mp.imread('imsource/'+name+'.png')
+    corrupted = np.copy(original)
+    corrupted[mask==0] = 0.0
+    res = gr.gen_reg_successively(u0=corrupted, orig=original, mask = mask, data_is_corrupted=True, nu=nu, **fixpars)
     gr.save_results(res, name, foldername = foldername+'inpainting')
 
 
@@ -105,9 +109,10 @@ if 'denoising' in cases:
 
   for name in images:
     ld = ld_dict[name]
-    res = gr.gen_reg_successively(imname='imsource/'+name+'.png',ld = ld, **fixpars)
+    original = mp.imread('imsource/'+name+'.png')
+    corrupted = np.load('imsource/corrupted/denoising/'+name+'_corrupted.npy')
+    res = gr.gen_reg_successively(u0=corrupted, orig=original, data_is_corrupted=True, ld = ld, **fixpars)
     gr.save_results(res, name, foldername = foldername+'denoising')
-
 
 
 if 'deconvolution' in cases:
@@ -140,7 +145,9 @@ if 'deconvolution' in cases:
       raise Exception('invalid name')
 
     ld = ld_dict[name]
-    res = gr.gen_reg_successively(imname='imsource/'+name+'.png', blur_size=blur_size, ld = ld, **fixpars)
+    original = mp.imread('imsource/'+name+'.png')
+    corrupted = np.load('imsource/corrupted/deconvolution/'+name+'_corrupted.npy')
+    res = gr.gen_reg_successively(u0=corrupted, orig=original, data_is_corrupted=True, blur_size=blur_size, ld = ld, **fixpars)
     gr.save_results(res, name, foldername = foldername+'deconvolution')
 
 

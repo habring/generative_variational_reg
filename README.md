@@ -1,13 +1,3 @@
-# generative variational regularization
-
-
-\emph{fish} (\href{https://commons.wikimedia.org/wiki/File:Pomocanthus_imperator_facing_right.jpg}{"Pomocanthus imperator facing right"}, by \href{https://commons.wikimedia.org/wiki/User:Albert_kok}{Albert kok}, licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/}{CC BY-SA 4.0}
-
-
-
-
-
-
 # A Generative Variational Model for Inverse Problemss in Imaging
 
 In this repository we provide the source code to reproduce the results from the paper [A Generative Variational Model for Inverse Problemss in Imaging](https://arxiv.org/abs/2104.12630).
@@ -19,7 +9,7 @@ In this repository we provide the source code to reproduce the results from the 
 * Preprocessing options to ensure data fits the framework.
  
 
-## Poetry
+## Requirements
 The code is written for Python 3.9. Dependency management is handled with [poetry](https://python-poetry.org/docs/). For details on necessary versions see the file `pyproject.toml`. To use the code, clone the repository and in the repository run the following command from your shell:
 ```
 poetry install
@@ -66,10 +56,6 @@ Additionally, the script `Reconstruction_coupled.py` is provided for using the r
 
 All authors are affiliated with the [Institute of Mathematics and Scientific Computing](https://mathematik.uni-graz.at/en) at the [University of Graz](https://www.uni-graz.at/en).
 
-## Publications
-If you find this tool useful, please cite the following associated publication.
-
-* A. Habring and M. Holler. A Generative Variational Model for Inverse Problemss in Imaging. *To appear in SIAM Journal on Mathematics of Data Science, 2021*.
 
 ## Reproduction of numerical results
 
@@ -84,10 +70,28 @@ wget -r -l 1 -nd -P experimental_data -A .mrc,.rawtlt https://zenodo.org/record/
 python Reconstruction_coupled.py "experimental_data/FEI HAADF_aligned_norm_ad.mrc" "experimental_data/EDS Al K Map_aligned_norm.mrc"  "experimental_data/EDS Si K Map_aligned_norm.mrc"  "experimental_data/EDS Yb L Map_aligned_norm.mrc" --Outfile "experimental_data_results/reconstruction" --Datahandling bright thresholding 0.0 "" 0.05 --Discrepancy=KL  --Regularisation=TGV --SliceLevels 10 270 1 --alpha 4.0 1.0 --mu 0.1 0.0024 0.0014 0.001 --Coupling=Frob3d --Channelnames HAADF Aluminum Silicon Ytterbium --Maxiter=5000 --Scalepars 0 100
 ```
 
+## Test Images
+
+In this repository you will find eexperiments with 5 different images. Three of them are copyright free images. The fish image ["Pomocanthus imperator facing right"](https://commons.wikimedia.org/wiki/File:Pomocanthus_imperator_facing_right.jpg), by [Albert kok](https://commons.wikimedia.org/wiki/User:Albert_kok), licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+
 ## Acknowledgements
 
 The authors acknowledge funding by the Austrian Research Promotion Agency (FFG) (Project number 881561). Martin Holler further is a member NAWI Graz (https://www.nawigraz.at) and BioTechMed Graz (https://biotechmedgraz. at).
 
+## Citation
+
+```
+@misc{habring2021generative,
+      title={A Generative Variational Model for Inverse Problems in Imaging}, 
+      author={Andreas Habring and Martin Holler},
+      year={2021},
+      eprint={2104.12630},
+      archivePrefix={arXiv},
+      primaryClass={math.OC}
+      journal={SIAM Journal on Mathematics of Data Science}
+}
+```
 
 ## License
 
