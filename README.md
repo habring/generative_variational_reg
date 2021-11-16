@@ -27,7 +27,7 @@ All authors are affiliated with the [Institute of Mathematics and Scientific Com
 
 ## Reproduction of numerical results
 
-The results of the article *Total Generalized Variation regularization for multi-modal electron tomography* can be reproduced with the software by running the following terminal commands inside the Graptor folder.
+* The results of the article *Total Generalized Variation regularization for multi-modal electron tomography* can be reproduced with the software by running the following terminal commands inside the Graptor folder.
 
 ```
 poetry run python reproduce_gen_reg_results.py
@@ -41,7 +41,7 @@ In this repository you will find eexperiments with 5 different images. Three of 
 
 ## Acknowledgements
 
-The authors acknowledge funding by the Austrian Research Promotion Agency (FFG) (Project number 881561). Martin Holler further is a member NAWI Graz (https://www.nawigraz.at) and BioTechMed Graz (https://biotechmedgraz. at).
+The authors acknowledge funding by the Austrian Research Promotion Agency (FFG) (Project number 881561). Martin Holler further is a member of NAWI Graz (https://www.nawigraz.at) and BioTechMed Graz (https://biotechmedgraz.at).
 
 ## Citation
 
