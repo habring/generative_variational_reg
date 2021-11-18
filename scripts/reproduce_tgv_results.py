@@ -47,6 +47,11 @@ import os
 
 
 
+## Choose result type to compute
+niter = 8000
+cases = ['inpaint','denoise','deblurring']
+outfolder = 'experiments/tgv/'
+
 
 
 folder = 'experiments'
@@ -57,39 +62,15 @@ folder = 'experiments/tgv'
 if not os.path.isdir(folder):
     os.mkdir(folder)
 
-folder = 'experiments/tgv/inpainting'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
 
-folder = 'experiments/tgv/denoising'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/tgv/deconvolution'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/tgv/supres'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/tgv/jpeg'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-
-
-
-
-## Choose result type to compute
-niter = 8000
-types = ['inpaint','denoise','deblurring']
-outfolder = 'experiments/tgv/'
-
+for case in cases:
+  folder = 'experiments/tgv/'+case
+  if not os.path.isdir(folder):
+      os.mkdir(folder)
 
 
 #Inpainting
-if 'inpaint' in types:
+if 'inpaint' in cases:
 
 
     folder = outfolder + 'inpainting/'
@@ -121,7 +102,7 @@ if 'inpaint' in types:
 
 
 #Denoising
-if 'denoise' in types:
+if 'denoise' in cases:
 
     folder = outfolder + 'denoising/'
     fixpars = {'niter':niter,'check':500}
@@ -152,7 +133,7 @@ if 'denoise' in types:
 
     
 #Deblurring
-if 'deblurring' in types:
+if 'deblurring' in cases:
     
     folder = outfolder + 'deconvolution/'
     F = mp.gconv([128,128],9,0.25)

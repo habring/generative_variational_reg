@@ -77,27 +77,10 @@ folder = 'experiments/gen_reg'
 if not os.path.isdir(folder):
     os.mkdir(folder)
 
-folder = 'experiments/gen_reg/inpainting'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/gen_reg/denoising'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/gen_reg/deconvolution'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/gen_reg/supres'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-folder = 'experiments/gen_reg/jpeg'
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-
+for case in cases:
+  folder = 'experiments/gen_reg/'+case
+  if not os.path.isdir(folder):
+      os.mkdir(folder)
 
 
 foldername = 'experiments/gen_reg/'
