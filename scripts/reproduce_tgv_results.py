@@ -1,3 +1,43 @@
+## A Generative Variational Model for Inverse Problems in Imaging
+##
+## Copyright (C) 2021 Andreas Habring, Martin Holler
+##
+## This program is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+##
+##
+## reproduce_generative_regularization_results.py:
+## Reproduce the results with the TGV regularization shown in [1].
+##
+## -------------------------
+## Andreas Habring (andreas.habring@uni-graz.at)
+## Martin Holler (martin.holler@uni-graz.at)
+## 
+## 18.11.2021
+## -------------------------
+## If you consider this code to be useful, please cite:
+## 
+## [1] @misc{habring2021generative,
+##          title={A Generative Variational Model for Inverse Problems in Imaging}, 
+##          author={Andreas Habring and Martin Holler},
+##          year={2021},
+##          eprint={2104.12630},
+##          archivePrefix={arXiv},
+##          primaryClass={math.OC}
+##          journal={SIAM Journal on Mathematics of Data Science}}
+##
+
+
 import sys, os
 sys.path.append(os.path.abspath(sys.argv[0] + "/../..") + "/source")
 

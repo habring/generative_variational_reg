@@ -39,6 +39,7 @@ For the experiments we use five different test images which are located in scrip
 
 * **Andreas Habring** andreas.habring@uni-graz.at
 * **Martin Holler** martin.holler@uni-graz.at 
+* **Kristian Bredies** kristian.bredies@uni-graz.at (the script source/libjpeg.py)
 
 All authors are affiliated with the [Institute of Mathematics and Scientific Computing](https://mathematik.uni-graz.at/en) at the [University of Graz](https://www.uni-graz.at/en).
 

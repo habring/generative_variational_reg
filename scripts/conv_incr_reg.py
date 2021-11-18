@@ -16,27 +16,26 @@
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 ##
-## radon_tgv_primal_dual_2d.py:
-## Code for 2D variational reconstruction of tomographic data.
+## conv_incr_reg.py:
+## Code to generate successively convolved images. This code will generate Figure 2.1 in [1].
 ##
 ## -------------------------
-## Richard Huber (richard.huber@uni-graz.at)
+## Andreas Habring (andreas.habring@uni-graz.at)
 ## Martin Holler (martin.holler@uni-graz.at)
-## Kristian Bredies (kristian.bredies@uni-graz.at)
 ## 
-## 21.02.2019
+## 18.11.2021
 ## -------------------------
 ## If you consider this code to be useful, please cite:
 ## 
-## [1] R. Huber, G. Haberfehlner, M. Holler, G. Kothleitner,
-##     K. Bredies. Total Generalized Variation regularization for
-##     multi-modal electron tomography. *Nanoscale*, 2019. 
-##     DOI: [10.1039/C8NR09058K](https://doi.org/10.1039/C8NR09058K).
+## [1] @misc{habring2021generative,
+##          title={A Generative Variational Model for Inverse Problems in Imaging}, 
+##          author={Andreas Habring and Martin Holler},
+##          year={2021},
+##          eprint={2104.12630},
+##          archivePrefix={arXiv},
+##          primaryClass={math.OC}
+##          journal={SIAM Journal on Mathematics of Data Science}}
 ##
-## [2] M. Holler, R. Huber, F. Knoll. Coupled regularization with
-##     multiple data discrepancies. Inverse Problems, Special
-##     issue on joint reconstruction and multi-modality/multi-spectral
-##     imaging, 34(8):084003, 2018.
 
 
 import sys, os
