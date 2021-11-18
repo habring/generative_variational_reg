@@ -33,7 +33,7 @@ in your shell.
 
 ## Test Images
 
-For the experiments we use five different test images which are located in scripts/imsource. The fish image ["Pomocanthus imperator facing right"](https://commons.wikimedia.org/wiki/File:Pomocanthus_imperator_facing_right.jpg), by [Albert kok](https://commons.wikimedia.org/wiki/User:Albert_kok) is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+For the experiments we use five different test images which are located in scripts/imsource. The fish image ["Pomocanthus imperator facing right"](https://commons.wikimedia.org/wiki/File:Pomocanthus_imperator_facing_right.jpg), by [Albert kok](https://commons.wikimedia.org/wiki/User:Albert_kok) is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The other images are license free.
 
 ## Authors
 

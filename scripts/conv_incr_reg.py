@@ -1,3 +1,44 @@
+## A Generative Variational Model for Inverse Problems in Imaging
+##
+## Copyright (C) 2021 Andreas Habring, Martin Holler
+##
+## This program is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+##
+##
+## radon_tgv_primal_dual_2d.py:
+## Code for 2D variational reconstruction of tomographic data.
+##
+## -------------------------
+## Richard Huber (richard.huber@uni-graz.at)
+## Martin Holler (martin.holler@uni-graz.at)
+## Kristian Bredies (kristian.bredies@uni-graz.at)
+## 
+## 21.02.2019
+## -------------------------
+## If you consider this code to be useful, please cite:
+## 
+## [1] R. Huber, G. Haberfehlner, M. Holler, G. Kothleitner,
+##     K. Bredies. Total Generalized Variation regularization for
+##     multi-modal electron tomography. *Nanoscale*, 2019. 
+##     DOI: [10.1039/C8NR09058K](https://doi.org/10.1039/C8NR09058K).
+##
+## [2] M. Holler, R. Huber, F. Knoll. Coupled regularization with
+##     multiple data discrepancies. Inverse Problems, Special
+##     issue on joint reconstruction and multi-modality/multi-spectral
+##     imaging, 34(8):084003, 2018.
+
+
 import sys, os
 sys.path.append(os.path.abspath(sys.argv[0] + "/../..") + "/source")
 
