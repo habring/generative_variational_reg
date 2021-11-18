@@ -12,6 +12,12 @@ This should install all necessary dependencies. Afterwards you can run for insta
 poetry run python demo.py
 ```
 
+## Repository Structure
+The repository is structured as follows: In the folder scripts, there are all scripts to reproduce the results from the paper. Details are explained in the next section. In the folder source, there are all function implementations:
+* `gen_reg.py` contains the implementation of the proposed generative variational regularization method.
+* `libjpeg.py` contains functions for the handling of JPEG data.
+* `matpy.py` contains auxiliary functions that are used multiple times in the code as well as the implementation of the TGV regularization.
+
 ## Reproduction of the Results
 * Run the script `demo.py` via typing
 ```
@@ -30,6 +36,8 @@ in your shell.
 poetry run python reproduce_tgv_results.py
 ```
 in your shell.
+
+* Run the script `conv_incr_reg.py` to reproduce Figure 2.1 in the paper.
 
 ## Test Images
 

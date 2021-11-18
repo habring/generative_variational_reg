@@ -16,7 +16,7 @@
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 ##
-## reproduce_generative_regularization_results.py:
+## gen_reg.py:
 ## Source code for the generative variational regularization method proposed in [1].
 ##
 ## -------------------------

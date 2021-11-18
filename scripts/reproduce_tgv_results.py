@@ -16,7 +16,7 @@
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##
 ##
-## reproduce_generative_regularization_results.py:
+## reproduce_tgv_results.py:
 ## Reproduce the results with the TGV regularization shown in [1].
 ##
 ## -------------------------
