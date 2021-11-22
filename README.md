@@ -12,13 +12,13 @@ This should install all necessary dependencies. Afterwards you can run for insta
 poetry run python demo.py
 ```
 
-## Repository Structure
+## Repository structure
 The repository is structured as follows: In the folder `scripts`, there are all scripts to reproduce the results from the paper. Details are explained in the next section. In the folder `source`, the used methods and other auxiliary functions are implemented:
 * `source/gen_reg.py` contains the implementation of the proposed generative variational regularization method.
 * `source/libjpeg.py` contains functions for the handling of JPEG data.
 * `source/matpy.py` contains auxiliary functions that are used multiple times in the code as well as the implementation of the TGV regularization.
 
-## Reproduction of the Results
+## Reproduction of the results
 * Run the script `demo.py` via typing
 ```
 poetry run python demo.py
@@ -39,7 +39,7 @@ in your shell.
 
 * Run the script `conv_incr_reg.py` to reproduce Figure 2.1 in the paper.
 
-## Test Images
+## Test images
 
 For the experiments we use five different test images which are located in scripts/imsource. The fish image ["Pomocanthus imperator facing right"](https://commons.wikimedia.org/wiki/File:Pomocanthus_imperator_facing_right.jpg), by [Albert kok](https://commons.wikimedia.org/wiki/User:Albert_kok) is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The other images are license free.
 

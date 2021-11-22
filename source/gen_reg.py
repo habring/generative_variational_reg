@@ -1442,7 +1442,7 @@ cl_devices = get_device_list()
 
 
 
-
+### code for generative regularization
 def gen_reg(**par_in):
 
     ###########################################
@@ -2722,6 +2722,8 @@ def gen_reg(**par_in):
 
 
 
+
+###### run the generative regularization code multiple times with increasing network depth
 
 def gen_reg_successively(**par_in):
 
