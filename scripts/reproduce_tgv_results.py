@@ -49,7 +49,7 @@ import os
 
 ## Choose result type to compute
 niter = 8000
-cases = ['inpaint','denoise','deblurring']
+cases = ['inpainting', 'denoising', 'deconvolution']
 outfolder = 'experiments/tgv/'
 
 
@@ -70,7 +70,7 @@ for case in cases:
 
 
 #Inpainting
-if 'inpaint' in cases:
+if 'inpainting' in cases:
 
 
     folder = outfolder + 'inpainting/'
@@ -102,7 +102,7 @@ if 'inpaint' in cases:
 
 
 #Denoising
-if 'denoise' in cases:
+if 'denoising' in cases:
 
     folder = outfolder + 'denoising/'
     fixpars = {'niter':niter,'check':500}
@@ -133,7 +133,7 @@ if 'denoise' in cases:
 
     
 #Deblurring
-if 'deblurring' in cases:
+if 'deconvolution' in cases:
     
     folder = outfolder + 'deconvolution/'
     F = mp.gconv([128,128],9,0.25)

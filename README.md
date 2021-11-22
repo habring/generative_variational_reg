@@ -1,9 +1,9 @@
 # A Generative Variational Model for Inverse Problemss in Imaging
 
-In this repository we provide the source code to reproduce the results from the paper [A Generative Variational Model for Inverse Problems in Imaging](https://arxiv.org/abs/2104.12630). The repository contains scripts to reproduce the results shown in the paper that were obtained with the proposed method and with TGV regularization. We did not include the scripts to reproduce the results on the Imagenet data set due to copyright issues. The offered source code, however, should allow you to easily use the method on any test image you like. To reproduce the results with the other comparison methods in the paper we refer to the respective git repositories ([A convex variational model for learning convolutional image atoms from incomplete data](https://github.com/hollerm/convex_learning), [Deep Image Prior](https://github.com/DmitryUlyanov/deep-image-prior)).
+In this repository we provide the source code to reproduce the results from the paper [A Generative Variational Model for Inverse Problems in Imaging](https://arxiv.org/abs/2104.12630). The repository contains scripts to reproduce the paper results with proposed method and with TGV regularization. We did not include the scripts to reproduce the results on the Imagenet data set due to copyright issues. The offered source code, however, should allow you to easily use the method on any test image you like. To reproduce the results with the other comparison methods in the paper we refer to the respective git repositories ([A convex variational model for learning convolutional image atoms from incomplete data](https://github.com/hollerm/convex_learning), [Deep Image Prior](https://github.com/DmitryUlyanov/deep-image-prior)).
 
 ## Requirements
-The code is written for Python 3.9 (precisely versions >=3.9 and <3.11). Dependency management is handled with [poetry](https://python-poetry.org/docs/). For details on necessary package versions see the file `pyproject.toml`. Before using the code make sure you have installed poetry on your system. Then, clone the repository and in the repository run the following command from your shell:
+The code is written for Python 3.9 (versions >=3.9 and <3.11). Dependency management is handled with [poetry](https://python-poetry.org/docs/). For details on necessary package versions see the file `pyproject.toml`. Before using the code make sure you have installed poetry on your system. Then, clone the repository and in the repository run the following command from your shell:
 ```
 poetry install
 ```
@@ -23,7 +23,7 @@ The repository is structured as follows: In the folder `scripts`, there are all 
 ```
 poetry run python demo.py
 ```
-in your shell in the correct directory. If everything is installed correctly it should perform inpainting with TGV and the proposed method each on the Barbara test image and store the results in the directory scripts/experiments/demo.
+in your shell in the directory `scripts`. If everything is installed correctly it should perform inpainting with TGV and the proposed method each on the Barbara test image and store the results in the directory scripts/experiments/demo.
 
 * The file `reproduce_generative_regularization_results.py` contains a script to reproduce the results with the proposed method. You can choose which experiments to perform by modifying the list `cases` at the beginning of the file. If you do not modify anything, all experiments will be performed with all possible test images. The results will be stored in scripts/experiments/gen_reg. Run the script via typing
 ```
@@ -31,7 +31,7 @@ poetry run python reproduce_generative_regularization_results.py
 ```
 in your shell.
 
-* The file `reproduce_tgv_results.py` contains a scripts to reproduce the results for TGV regularization. The results will be stored in scripts/experiments/tgv. To execute it type
+* The file `reproduce_tgv_results.py` contains a script to reproduce the results for TGV regularization. The results will be stored in scripts/experiments/tgv. To execute it type
 ```
 poetry run python reproduce_tgv_results.py
 ```
@@ -47,7 +47,7 @@ For the experiments we use five different test images which are located in scrip
 
 * **Andreas Habring** andreas.habring@uni-graz.at
 * **Martin Holler** martin.holler@uni-graz.at 
-* **Kristian Bredies** kristian.bredies@uni-graz.at (the code in source/libjpeg.py)
+* **Kristian Bredies** kristian.bredies@uni-graz.at provided the code in source/libjpeg.py.
 
 All authors are affiliated with the [Institute of Mathematics and Scientific Computing](https://mathematik.uni-graz.at/en) at the [University of Graz](https://www.uni-graz.at/en).
 

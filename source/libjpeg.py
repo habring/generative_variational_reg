@@ -23,6 +23,7 @@
 ## -------------------------
 ## Andreas Habring (andreas.habring@uni-graz.at)
 ## Martin Holler (martin.holler@uni-graz.at)
+## Kristian Bredies (kristian.bredies@uni-graz.at)
 ## 
 ## 18.11.2021
 ## -------------------------
