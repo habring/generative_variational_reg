@@ -53,9 +53,6 @@ import matplotlib.pyplot as plt
 num_iter = 8000
 niter_steps = 500 #iterations for the smaller networks as initialization
 show_every = 0
-check = 0
-check_opt = 500
-L_max_count = 0
 
 cases = ['inpainting', 'denoising', 'deconvolution', 'supres', 'jpeg']
 
@@ -90,8 +87,7 @@ if 'inpainting' in cases:
 
   fixpars = {'application':'inpainting','L':L,'ksz':ksz,'nl':nl,
                                       'stride':stride, 'inpaint_perc':30, 'niter':niter,
-                                      'check':check,'show_every':show_every,
-                                      'check_opt':check_opt}
+                                      'show_every':show_every,}
 
 
   images = ['barbara_crop', 'cart_text_mix', 'patchtest', 'zebra', 'fish']
@@ -117,8 +113,8 @@ if 'denoising' in cases:
 
   fixpars = {'application':'denoising','L':L,'ksz':ksz,'nl':nl,
                                       'stride':stride, 'noise':0.1, 'niter':niter,
-                                      'check':check,'show_every':show_every,
-                                      'check_opt':check_opt, 'nu':0.925}
+                                      'show_every':show_every,
+                                      'nu':0.925}
 
 
   images = ['barbara_crop', 'cart_text_mix', 'patchtest', 'zebra', 'fish']
@@ -143,8 +139,8 @@ if 'deconvolution' in cases:
 
   fixpars = {'application':'deconvolution','L':L,'ksz':ksz,'nl':nl,
                                       'stride':stride, 'noise':0.025, 'blur_sig':0.25, 'niter':niter,
-                                      'check':check,'show_every':show_every,
-                                      'check_opt':check_opt, 'nu':0.925}
+                                      'show_every':show_every,
+                                      'nu':0.925}
 
 
   ld_dict = {
@@ -179,8 +175,7 @@ if 'supres' in cases:
 
   fixpars = {'application':'supres','L':L,'ksz':ksz,'nl':nl,
                                       'stride':stride, 'sr_fac':4, 'niter':niter,
-                                      'check':check,'show_every':show_every,
-                                      'check_opt':check_opt}
+                                      'show_every':show_every}
 
 
   images = ['zebra', 'fish_large', 'barbara_crop']
@@ -205,8 +200,7 @@ if 'jpeg' in cases:
 
   fixpars = {'application':'jpeg','L':L,'ksz':ksz,'nl':nl,
                                       'stride':stride, 'niter':niter,
-                                      'check':check,'show_every':show_every,
-                                      'check_opt':check_opt}
+                                      'show_every':show_every}
 
 
   images = ['barbara_crop', 'cart_text_mix', 'patchtest', 'fish_cropped', 'zebra_cropped']

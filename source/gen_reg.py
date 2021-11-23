@@ -319,7 +319,9 @@ def save_results(res, name, foldername = ''):
 
 def optimality_conditions(res, fwd_operator = lambda u:u, fwd_adj = lambda u:u, eps_test = 1e-4, zero = 1e-4, print_res = False):
     # check optimality conditions:
-    print('CHECK OPTIMALITY')
+
+    if print_res:
+        print('CHECK OPTIMALITY')
     optimality = True
     N,M = res.u.shape
     l1vec = nfun('l1eps',l1eps_par=res.par.eps_TV,vdims=(2),npar=res.par.ptv/(N*M))
@@ -1480,7 +1482,7 @@ def gen_reg(**par_in):
     par.noise = 0.025
     par.inpaint_perc = 30 #perc of known pixels
     par.sr_fac = 4  # scaling factor for super-resolution
-    par.check = 100 #The higher check is, the faster
+    par.check = 0 #The higher check is, the faster
     par.show_every = 0 #Show_every = 0 means to not show anything
     par.check_opt = 0 #every check_opt iterations we check optimality conditions, if 0, we never check
     par.opt_accuracy = 1e-4
@@ -1602,7 +1604,6 @@ def gen_reg(**par_in):
 
     ## allocate memory on gpu
     if (np.any(par.u_init)):
-        print('initial u given')
         u_init = np.copy(par.u_init)
     else:
         if par.application == 'supres':
@@ -1838,7 +1839,7 @@ def gen_reg(**par_in):
 
         fwd_blur = lambda u:scipy.signal.convolve2d(u, blur_kernel , mode='same', boundary='fill', fillvalue=0)
         def check_optimality_conditions(res):
-            return optimality_conditions(res, fwd_operator = fwd_blur, fwd_adj = fwd_blur, eps_test = par.opt_accuracy, zero = 1e-4, print_res = True)
+            return optimality_conditions(res, fwd_operator = fwd_blur, fwd_adj = fwd_blur, eps_test = par.opt_accuracy, zero = 1e-4, print_res = False)
 
     ################################## denoising ################################################
     elif par.application == 'denoising':
@@ -1904,7 +1905,7 @@ def gen_reg(**par_in):
             return u
 
         def check_optimality_conditions(res):
-            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = True)
+            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = False)
 
 
     ################################## inpainting ################################################
@@ -1984,7 +1985,7 @@ def gen_reg(**par_in):
             return u
 
         def check_optimality_conditions(res):
-            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = True)
+            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = False)
 
     ################################## super-resolution ################################################
     elif par.application == 'supres':
@@ -2048,7 +2049,7 @@ def gen_reg(**par_in):
             return u
 
         def check_optimality_conditions(res):
-            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = True)
+            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = False)
 
     ################################## jpeg decompression ################################################
     elif par.application == 'jpeg':
@@ -2116,7 +2117,7 @@ def gen_reg(**par_in):
             return u
 
         def check_optimality_conditions(res):
-            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = True)
+            return optimality_conditions(res, eps_test = par.opt_accuracy, zero = 1e-4, print_res = False)
 
     else:
         raise Exception('Application invalid')
@@ -2203,7 +2204,6 @@ def gen_reg(**par_in):
             D_init.append(Di)
 
     else:
-        print('initial D given')
         # fill first layers with given initial values of atoms
         D_init = []
         for i in range(len(par.D_init)):
@@ -2235,7 +2235,6 @@ def gen_reg(**par_in):
     vd = array.zeros(queue, ud.shape , np.float32 , order='F', allocator=None)
 
     if ( len(par.c_init)>0 ):
-        print('initial c given')
         #in this case, we assume we are given coefficients on layer above as par.c_init
 
         for i in range(len(par.c_init)):

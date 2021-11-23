@@ -1,6 +1,6 @@
-## A Generative Variational Model for Inverse Problems in Imaging
+## Python module for handling JPEG images
 ##
-## Copyright (C) 2021 Andreas Habring, Martin Holler
+## Copyright (C) 2021 Kristian Bredies
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -17,26 +17,13 @@
 ##
 ##
 ## libjpeg.py:
-## Utility functionals for handling of JPEG images. This piece of code 
-## was taken from previous work by Kristian Bredies (kristian.bredies@uni-graz.at).
+## Module for loading compressed JPEG images. 
 ##
 ## -------------------------
-## Andreas Habring (andreas.habring@uni-graz.at)
-## Martin Holler (martin.holler@uni-graz.at)
 ## Kristian Bredies (kristian.bredies@uni-graz.at)
 ## 
 ## 18.11.2021
 ## -------------------------
-## If you consider this code to be useful, please cite:
-## 
-## [1] @misc{habring2021generative,
-##          title={A Generative Variational Model for Inverse Problems in Imaging}, 
-##          author={Andreas Habring and Martin Holler},
-##          year={2021},
-##          eprint={2104.12630},
-##          archivePrefix={arXiv},
-##          primaryClass={math.OC}
-##          journal={SIAM Journal on Mathematics of Data Science}}
 ##
 
 
