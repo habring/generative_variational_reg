@@ -26,7 +26,7 @@ All of the following commands have to be run from the `scripts` folder.
 poetry run python demo.py
 ```
 
-* The file `reproduce_generative_regularization_results.py` contains a script to reproduce the results with the proposed method. You can choose which experiments to perform by modifying the list `cases` at the beginning of the file. If you do not modify anything, all experiments will be performed with all possible test images. The results will be stored in scripts/experiments/gen_reg. Run it with the command
+* The file `reproduce_generative_regularization_results.py` contains a script to reproduce the results with the proposed method. You can choose which experiments to perform by modifying the list `cases` at the beginning of the file. If you do not modify anything, all experiments will be performed with all possible test images. The results will be stored in scripts/experiments/gen_reg. Note that the computations will take some time since we chose rather high numbers of iterations in order to surely have convergence. Run the script with the command
 ```
 poetry run python reproduce_generative_regularization_results.py
 ```
