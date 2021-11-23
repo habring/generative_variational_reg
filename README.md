@@ -19,7 +19,7 @@ The repository is structured as follows: In the folder `scripts`, there are all 
 * `source/matpy.py` contains auxiliary functions that are used multiple times in the code as well as the implementation of the TGV regularization.
 
 ## Reproduction of the results
-All of the following commands have to be run from the `scripts` folder.
+All the following commands should be run from the `scripts` folder.
 
 * The file `demo.py` shall serve as a test if everything is set up correctly. Running it will perform inpainting on the Barbara image with the proposed method and TGV regularization and store the results in `scripts/experiments/demo`. To run it type the following command in your shell
 ```
